@@ -2,7 +2,10 @@
 simple goroutine manager
 
 ```
-
+func myFunc2(num int) {
+	fmt.Printf("num:%v\n", num)
+	time.Sleep(time.Second * 1)
+}
 func main() {
 	for i := 1; i <= 10; i++ {
 		AddTask(i)
