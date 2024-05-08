@@ -23,7 +23,7 @@ type managedRoutine struct {
 	LastRunTime time.Time
 	Count       int
 	Speed       float64 //seconds
-	IsPause     bool
+	IsPaused    bool
 }
 
 type Manager struct {
@@ -77,11 +77,11 @@ func (m *Manager) Add(name string, fn func()) error {
 					name, routine.StartTime.Format("2006-01-02 15:04:05"), routine.LastRunTime.Format("2006-01-02 15:04:05"))
 				return
 			case <-routine.PauseChn:
-				fmt.Printf("Task '%s' pasused", name)
-				routine.IsPause = true
+				fmt.Printf("Task '%s' pasused\n", name)
+				routine.IsPaused = true
 				<-routine.PauseChn
-				routine.IsPause = false
-				fmt.Printf("Task '%s' resume", name)
+				routine.IsPaused = false
+				fmt.Printf("Task '%s' resumed\n", name)
 
 			default:
 				start := time.Now().UnixMilli()
@@ -115,12 +115,12 @@ func (m *Manager) StopAll() {
 		m.routines.Delete(key)
 		return true
 	})
-	m.Wg.Done()
+	m.Wg.Wait()
 }
 
 func (m *Manager) PauseAll() {
 	m.routines.Range(func(key, value interface{}) bool {
-		value.(managedRoutine).PauseChn <- struct{}{}
+		value.(*managedRoutine).PauseChn <- struct{}{}
 		return true
 	})
 
@@ -128,7 +128,7 @@ func (m *Manager) PauseAll() {
 
 func (m *Manager) ResumeAll() {
 	m.routines.Range(func(key, value interface{}) bool {
-		value.(managedRoutine).PauseChn <- struct{}{}
+		value.(*managedRoutine).PauseChn <- struct{}{}
 		return true
 	})
 }
@@ -138,7 +138,7 @@ func (m *Manager) Stop(name string) error {
 	if !ok {
 		return fmt.Errorf("routine not exists.")
 	}
-	routine.(managedRoutine).StopChn <- struct{}{}
+	routine.(*managedRoutine).StopChn <- struct{}{}
 	return nil
 }
 
@@ -147,7 +147,7 @@ func (m *Manager) Pause(name string) error {
 	if !ok {
 		return fmt.Errorf("routine not exists.")
 	}
-	routine.(managedRoutine).PauseChn <- struct{}{}
+	routine.(*managedRoutine).PauseChn <- struct{}{}
 	return nil
 
 }
@@ -156,6 +156,6 @@ func (m *Manager) Resume(name string) error {
 	if !ok {
 		return fmt.Errorf("routine not exists.")
 	}
-	routine.(managedRoutine).PauseChn <- struct{}{}
+	routine.(*managedRoutine).PauseChn <- struct{}{}
 	return nil
 }
