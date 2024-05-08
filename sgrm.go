@@ -139,6 +139,7 @@ func (m *Manager) Stop(name string) error {
 		return fmt.Errorf("routine not exists.")
 	}
 	routine.(*managedRoutine).StopChn <- struct{}{}
+	m.routines.Delete(name)
 	return nil
 }
 
