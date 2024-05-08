@@ -1,0 +1,2 @@
+# sgrm
+simple goroutine manager
