@@ -13,7 +13,7 @@ func main() {
 
 	time.Sleep(time.Second * 5)
 
-	list := GRM.GetAllTask()
+	list := sgrm.GRM.GetAllTask()
 	for _, goroutine := range list {
 		fmt.Printf("name: %s ->start time: %s -> last run: %s -> count %d\n",
 			goroutine.Name,
@@ -23,7 +23,7 @@ func main() {
 		)
 	}
 
-	GRM.StopAll()
+	sgrm.GRM.StopAll()
 }
 
 /*
@@ -40,22 +40,22 @@ func myFunc1() {
 	time.Sleep(time.Second * 1)
 }
 func main() {
-	GRM.Add("task1", myFunc1)
-	GRM.Add("task2", myFunc1)
+	sgrm.GRM.Add("task1", myFunc1)
+	sgrm.GRM.Add("task2", myFunc1)
 
 	time.Sleep(time.Second * 5)
 
-	GRM.PauseAll() //pause all
+	sgrm.GRM.PauseAll() //pause all
 
-	list := GRM.GetAllTask()
+	list := sgrm.GRM.GetAllTask()
 	for _, goroutine := range list {
 		fmt.Printf("%+v\n", goroutine)
 	}
 	time.Sleep(time.Second * 5)
-	GRM.ResumeAll() //resume all
+	sgrm.GRM.ResumeAll() //resume all
 
 	time.Sleep(time.Second * 5)
-	list = GRM.GetAllTask()
+	list = sgrm.GRM.GetAllTask()
 	for _, goroutine := range list {
 		fmt.Printf("%+v\n", goroutine)
 	}
@@ -64,7 +64,7 @@ func main() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	<-done
 
-	GRM.StopAll()
+	sgrm.GRM.StopAll()
 }
 
 ```
