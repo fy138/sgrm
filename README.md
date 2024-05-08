@@ -30,7 +30,7 @@ func main() {
 Parameters copied
 */
 func AddTask(num int) {
-	GRM.Add(fmt.Sprintf("task%v", num), func() { myFunc2(num) })
+	sgrm.GRM.Add(fmt.Sprintf("task%v", num), func() { myFunc2(num) })
 }
 ```
 #full example
