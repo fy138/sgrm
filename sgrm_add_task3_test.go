@@ -11,8 +11,6 @@ func TestAddTask3(t *testing.T) {
 		AddTask(i)
 	}
 
-	time.Sleep(time.Second * 5)
-
 	list := GRM.GetAllTask()
 	for _, goroutine := range list {
 		fmt.Printf("name: %s ->start time: %s -> last run: %s -> count %d\n",
@@ -22,7 +20,8 @@ func TestAddTask3(t *testing.T) {
 			goroutine.Count,
 		)
 	}
-
+	GRM.StartAll()
+	time.Sleep(time.Second * 5)
 	GRM.StopAll()
 }
 

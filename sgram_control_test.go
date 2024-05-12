@@ -12,7 +12,7 @@ import (
 func TestAddTask4(t *testing.T) {
 	GRM.Add("task1", myFunc1)
 	GRM.Add("task2", myFunc1)
-
+	GRM.StartAll()
 	time.Sleep(time.Second * 5)
 
 	GRM.PauseAll() //pause all
