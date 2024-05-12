@@ -22,7 +22,7 @@ func main() {
 			goroutine.Count,
 		)
 	}
-
+	sgrm.GRM.StartAll()
 	sgrm.GRM.StopAll()
 }
 
@@ -43,6 +43,7 @@ func main() {
 	sgrm.GRM.Add("task1", myFunc1)
 	sgrm.GRM.Add("task2", myFunc1)
 
+	sgrm.GRM.StartAll() //start
 	time.Sleep(time.Second * 5)
 
 	sgrm.GRM.PauseAll() //pause all
@@ -60,10 +61,11 @@ func main() {
 		fmt.Printf("%+v\n", goroutine)
 	}
 
+	//graceful exit 优雅退出
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	<-done
-
+	
 	sgrm.GRM.StopAll()
 }
 
