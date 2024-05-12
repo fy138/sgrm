@@ -164,22 +164,16 @@ func (m *Manager) GetTaskByName(name string) (*managedRoutine, error) {
 
 /*
 *
-stop  all task
+stop  all tasks
 */
 func (m *Manager) StopAll() {
 	m.cancel()
 	close(m.stopAll)
-
-	m.routines.Range(func(key, value interface{}) bool {
-		m.routines.Delete(key)
-		return true
-	})
-	m.Wg.Wait()
 }
 
 /*
 *
-stop all task
+stop all tasks
 */
 func (m *Manager) Stop(name string) error {
 	mr, err := m.GetTaskByName(name)
@@ -193,7 +187,7 @@ func (m *Manager) Stop(name string) error {
 
 /*
 *
-pause all task
+pause all tasks
 */
 func (m *Manager) PauseAll() {
 	m.routines.Range(func(key, value interface{}) bool {
@@ -218,7 +212,7 @@ func (m *Manager) Pause(name string) error {
 
 /*
 *
-resume all task
+resume all tasks
 */
 func (m *Manager) ResumeAll() {
 	m.routines.Range(func(key, value interface{}) bool {
@@ -237,5 +231,34 @@ func (m *Manager) Resume(name string) error {
 		return err
 	}
 	mr.PauseChn <- struct{}{}
+	return nil
+}
+
+/*
+*
+delete all tasks
+*/
+func (m *Manager) DeletAll() {
+	m.cancel()
+	close(m.stopAll)
+	m.routines.Range(func(key, value interface{}) bool {
+		m.routines.Delete(key)
+		return true
+	})
+	m.Wg.Wait()
+}
+
+/*
+*
+delete a task
+*/
+func (m *Manager) Delete(name string) error {
+
+	_, err := m.GetTaskByName(name)
+	if err != nil {
+		return err
+	}
+	m.Stop(name)
+	m.routines.Delete(name)
 	return nil
 }
